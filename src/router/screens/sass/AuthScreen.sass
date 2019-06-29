@@ -1,0 +1,49 @@
+.fade-enter
+  opacity: 0
+  z-index: 1
+
+.fade-enter.fade-enter-active
+  opacity: 1
+  transition: opacity 250ms ease-in
+.fade-exit.fade-exit-active
+  opacity: 0
+  transition: opacity 250ms ease-in
+
+.auth-screen
+  height: calc(100vh - 50px)
+  // сделать градиент
+    // rgb(17, 150, 166)
+      // 19 173 192
+  // background-color: rgb(45, 180, 197)
+  // background: rgb(19,173,192) 
+  // background: -moz-linear-gradient(left, rgb(19,173,192) 0%, rgb(32,124,202) 47%, rgb(17,150,166) 100%)
+  // background: -webkit-linear-gradient(left, rgb(19,173,192) 0%,rgb(32,124,202) 47%,rgb(17,150,166) 100%) 
+  // background: linear-gradient(to right, rgb(19,173,192) 0%,rgb(32,124,202) 47%,rgb(17,150,166) 100%) 
+  // filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#13adc0', endColorstr='#1196a6',GradientType=1 )
+.auth-form
+  width: 100%
+  height: 100%
+
+.auth-form > div
+  width: 50%
+  height: 100%
+  display: flex
+  justify-content: center
+  align-items: center
+  // float: right
+  // margin-left: auto
+  // margin-right: 0
+  transition: all .2s ease
+  transform: translateX(100%)
+
+.auth-form.active > div
+  // float: left
+  // margin-right: auto
+  // margin-left: 0
+  transform: translateX(0)
+
+.auth-title-wrapper
+  // position: absolute
+  // top: 0
+  // bottom: 0
+  // width: 50%

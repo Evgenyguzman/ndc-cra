@@ -1,0 +1,62 @@
+.sidebar
+  width: 300px
+  height: calc(100vh - 50px)
+  top: 50px
+  position: sticky
+  padding: 20px 10px
+  box-sizing: border-box
+  >div
+    padding: 20px 10px
+    // background-color: #e7e7e7
+    border: 3px solid #ffffff
+    border-radius: 20px
+    height: 100%
+    box-sizing: border-box
+
+.device-title, .device-settings
+  display: flex
+  align-items: center
+  justify-content: space-between
+  flex-wrap: wrap
+  >h1
+    margin: 0
+
+.relative-table
+  position: relative
+  .absolute-card
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    .flex-card-inner
+      display: flex
+      justify-content: flex-start
+      flex-wrap: wrap
+      align-items: center
+
+.add-device-popup
+  position: fixed
+  background-color: rgba(255,255,255,.8)
+  top: 0
+  left: 0
+  right: 0
+  bottom: 0
+  padding: 100px 50px 50px
+  overflow-y: scroll
+  >div
+    height: 100%
+    display: flex
+    justify-content: center
+    align-items: center
+    .card
+      width: 100%
+    .choose-device-slider
+      width: 100%
+      height: 250px
+      padding: 20px
+      .choose-device-content
+        display: flex
+        flex-direction: column
+        align-items: center
+        img
+          height: 100px

@@ -1,0 +1,31 @@
+@charset "UTF-8";
+
+@font-face{
+  font-family:'Siemens Sans Roman';
+  src:url("./fonts/siemenssans-roman-webfont.woff2") format("woff2"),
+    url("./fonts/siemenssans-roman-webfont.woff") format("woff");
+  font-display:swap
+}
+@font-face{
+  font-family:'Siemens Sans Bold';
+  src:url("./fonts/siemenssans-bold-webfont.woff2") format("woff2"),
+  url("./fonts/siemenssans-bold-webfont.woff") format("woff");
+  font-display:swap
+}
+/* @font-face{
+  font-family:'siemens-webicons-webfont';
+  src:url("./fonts/siemens-webicons-webfont.woff") format("woff"),
+  url("./fonts/siemens-webicons-webfont.svg") format("svg")
+} */
+@font-face{
+  font-family:'Montserrat';
+  src:url("./fonts/Montserrat.ttf") format("ttf");
+}
+
+h1, h2, h3, h4, h5, h6, p, div{
+  font-family: 'Siemens Sans Roman';
+  font-weight: lighter
+}
+a, button{
+  font-family: 'Siemens Sans Roman'
+}
