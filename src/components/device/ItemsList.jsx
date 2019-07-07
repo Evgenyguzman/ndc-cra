@@ -1,10 +1,10 @@
 import React from "react";
 import { SimpleTable } from "../ui/Tables/Tables";
 
-export class Table extends React.Component{
+export class ItemsList extends React.Component{
   render(){
 
-    console.log(this.props.parameters)
+    // console.log(this.props.parameters)
 
     const columns = [{
       Header: 'ID',
@@ -14,11 +14,11 @@ export class Table extends React.Component{
       accessor: 'name'
     }, {
       Header: 'Значение',
-      accessor: 'interpreted-data',
+      accessor: 'value',
       Cell: props => <span className='number'>{props.value}</span>
     }, {
       Header: 'Данные',
-      accessor: 'raw-data'
+      accessor: 'data'
     }, {
       Header: 'Тип',
       accessor: 'data-type'
@@ -31,12 +31,22 @@ export class Table extends React.Component{
     }, {
       Header: 'Больше',
       Cell: props => {
-        console.log(props)
-        return React.createElement(this.props.popup, {settings: props.original.settings})
+        // console.log(props)
+        return React.createElement(this.props.link, {id: props.original.id})
         // return <span className='number'>{props.value}</span>
+      }
+    }, {
+      Header: 'Удалить',
+      Cell: props => {
+        return React.createElement(this.props.deleteBtn, {itemId: props.original.id, deviceId: this.props.deviceId, onRemove: this.props.onRemove})
       }
     }]
 
-    return <div className="relative-table"><SimpleTable parameters={this.props.parameters} columns={columns} /></div>
+    return(
+      <React.Fragment>
+        <h2>Параметры</h2>
+        <div className="relative-table"><SimpleTable parameters={this.props.parameters} columns={columns} /></div>
+      </React.Fragment>
+    )
   }
 }

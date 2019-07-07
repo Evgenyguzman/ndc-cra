@@ -1,5 +1,5 @@
 import React from "react";
-import { InputText } from "../ui/Inputs";
+import { Input } from "../ui/Inputs/Inputs";
 import { Button } from "../ui/Buttons/Buttons";
 import WsCloudService from "../../services/WsCloudService";
 
@@ -21,9 +21,9 @@ export class SignInForm extends React.Component{
         <div>
           <h3>Sign In</h3>
           <div>
-            <InputText name="email" value={this.state.login} onChange={(login)=>this.setState({login})} />
+            {/* <InputText name="email" value={this.state.login} onChange={(login)=>this.setState({login})} />
             <InputText type="password" name="password" value={this.state.password} onChange={(password)=>this.setState({password})} />
-            <Button>Next</Button>
+            <Button>Next</Button> */}
           </div>
         </div>
       </form>

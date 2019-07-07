@@ -1,6 +1,8 @@
 import React from 'react';
 import './App.css';
 
+import 'font-awesome/css/font-awesome.min.css'
+
 import Router from './router/Router'
 
 import storeFactory from './store'

@@ -20,7 +20,11 @@ export default class WsCloudService {
 	async connect(address) {
 		this.log('connecting...')
 		this.state = 'connecting'
-		this.socket = new WebSocket(address)
+		try{
+			this.socket = new WebSocket(address)
+		}catch(e){
+			return false
+		}
 	  this.socket.addEventListener('message', (event) => {
 	    // this.log('received: ' + event.data)
 	    let data = JSON.parse(event.data)
@@ -119,6 +123,10 @@ export default class WsCloudService {
 			case 'reply': this.onReply(data.data); break
 			case 'device': this.onDeviceChanged(data.device); break
 			case 'item': this.onItemChanged(data.item); break
+			case 'new-device': this.onDeviceAdded(data.device); break
+			case 'new-item': this.onItemAdded(data.item); break
+			case 'device-removed': this.onDeviceRemoved({deviceId: data['device-id']}); break
+			case 'item-removed': this.onItemRemoved({ itemId: data['item-id'], deviceId: data['device-id']}); break
 			default: break
 		}
 	}
@@ -139,8 +147,15 @@ export default class WsCloudService {
 
 	onDeviceChanged(device) {
   }
-
 	onItemChanged(item){
+	}
+	onDeviceAdded(device) {
+  }
+	onItemAdded(item){
+	}
+	onDeviceRemoved(data) {
+  }
+	onItemRemoved(data){
 	}
 	
 	checkDefined(object, fields) {
@@ -170,8 +185,13 @@ export default class WsCloudService {
 			'device-settings': settings 
 		}))
 	}
-	async changeDevice(){
-		// not availablу now
+	async changeDevice(data){
+		const msg = {
+			'type': 'update-device',
+			...data // name, settings
+		}
+		console.log(msg)
+		return await this.sendWithResponse(JSON.stringify(msg))
 	}
 	async removeDevice(id){
 		return await this.sendWithResponse(JSON.stringify({
@@ -191,7 +211,7 @@ export default class WsCloudService {
 			type: 'get-item-settings'
 		}))
 	}
-	async addItem(name, type, id, settings, deviceId, dataType, storageTimeRange){
+	async addItem({name, type, id, settings, deviceId, dataType, storageRangeTime}){
 		return await this.sendWithResponse(JSON.stringify({
 			'type': 'add-item',
 			'item-name': name,  
@@ -200,17 +220,31 @@ export default class WsCloudService {
 			'item-settings': settings,
 			'device-id': deviceId,
 			'item-data-type': dataType,
-			'item-storage-time-range': storageTimeRange
+			'item-storage-range-time': storageRangeTime
 		}))
 	}
-	async changeItem(){
-		// not availablу now
+	async changeItem(data){
+		const msg = {
+			'type': 'update-item',
+			...data // name, settings, data-type, storage-time-range, ...
+		}
+		console.log(msg)
+		return await this.sendWithResponse(JSON.stringify(msg))
 	}
 	async removeItem(id){
 		return await this.sendWithResponse(JSON.stringify({
 			'type': 'remove-item', 
 			'item-id': id
 		}))
+	}
+
+	async getItemDataStorage(data){
+		const msg = {
+			'type': 'get-item-data-storage',
+			...data
+		}
+		console.log(msg)
+		return await this.sendWithResponse(JSON.stringify(msg))
 	}
 
 	async sendWithResponse(string){

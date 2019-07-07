@@ -2,8 +2,7 @@ import React from "react";
 import {
   Switch,
   Route,
-  Redirect,
-  NavLink
+  Redirect
 } from "react-router-dom";
 import { TransitionGroup, CSSTransition } from "react-transition-group";
 

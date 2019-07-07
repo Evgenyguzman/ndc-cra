@@ -1,8 +1,10 @@
 import React from "react";
-import { Table } from "../device/Table";
-import { Tabs } from "../device/Tabs";
 import { SimpleCard } from "../ui/Cards/Cards";
 import { Button } from "../ui/Buttons/Buttons";
+import { ItemsContainer } from "../../containers/SystemContainers";
+import { SettingsModal, SettingsForm } from "../device/SettingsModal";
+import { SimpleLink } from "../ui/Links/Links";
+import { Input } from "../ui/Inputs/Inputs";
 
 export class Device extends React.Component{
   constructor(props){
@@ -19,14 +21,16 @@ export class Device extends React.Component{
     const {id} = this.props
 
     const device = devices.get(id)
+
+    // redirect to system if no deice with such id
     if(!device || items.size === 0) return null
-    console.log(device)
-    console.log(items)
+    // console.log(device)
+    // console.log(items)
   
     const parameters = device.items.map(itemId => {
       return items.get(itemId)
     })
-    console.log(parameters)
+    // console.log(parameters)
 
     // if(!device || !device.parameters || !this.state.parameterIds || !this.state.chartsIds) return null
 
@@ -43,26 +47,18 @@ export class Device extends React.Component{
           <SimpleCard>
             <div className="device-title"> 
               <h1>{device.name}</h1>
+              <Input data={{type:'text',name:'name'}} value={device.name} onChange={(val, name)=>{this.props.onChange({[name]: val, 'device-id': device.id})}} />
               <h3>{device.id}</h3>
               <h3>{device.type}</h3>
               <b>{device.online === true ? 'Online' : 'Было онлайн' + device['last-online']}</b>
               <Button onClick={()=>this.props.onRemove(device.id, token)}>Удалить</Button>
             </div>
-            <div className="device-settings">
-              {Object.keys(settings).map((key) =>
-                <React.Fragment key={key}>
-                  <div>
-                    <label>{key}</label>
-                    <h3 htmlFor="">{settings[key]}</h3>
-                  </div>
-                </React.Fragment>
-              )}
-            </div>
+            <SettingsModal>
+              <SettingsForm type="device-id" id={device.id} settings={settings} onChange={this.props.onChange} />
+            </SettingsModal>
           </SimpleCard>
-          <SimpleCard>
-            <h2>Параметры</h2>
-            <Table parameters={parameters} popup={ItemSettingsPopup} />
-          </SimpleCard>
+          
+          <ItemsContainer parameters={parameters} link={ItemLink} deleteBtn={DeleteBtn} deviceId={device.id} />
           {/* <SimpleCard>
             <h2>Графики</h2>
             <Tabs charts={charts} />
@@ -73,37 +69,23 @@ export class Device extends React.Component{
   }
 }
 
-class ItemSettingsPopup extends React.Component{
-  constructor(props){
-    super(props)
-    this.state = {
-      isOpened: false
-    }
-  }
+class ItemLink extends React.Component{
   render(){
-    const { isOpened } = this.state
-    const { settings } = this.props
+    const { id } = this.props
     return(
       <React.Fragment>
-        <button onClick={()=>this.setState({isOpened: !isOpened})}>Toggle</button>
-        {
-          isOpened
-          ?
-            <div className="absolute-card" onClick={()=>this.setState({isOpened: !isOpened})}>
-              <SimpleCard>
-                <div className="flex-card-inner">
-                  {Object.keys(settings).map((key) => 
-                    <div key={key}>
-                      <label>{key}</label>
-                      <h3>{settings[key]}</h3>
-                    </div>
-                  )}
-                </div>
-              </SimpleCard>
-            </div>
-          :
-            null
-        }
+        <SimpleLink to={'/item/' + id}>Больше</SimpleLink>
+      </React.Fragment>
+    )
+  }
+}
+
+class DeleteBtn extends React.Component{
+  render(){
+    const { itemId, deviceId, onRemove } = this.props
+    return(
+      <React.Fragment>
+        <button onClick={()=>onRemove(itemId, deviceId)}>Delete</button>
       </React.Fragment>
     )
   }

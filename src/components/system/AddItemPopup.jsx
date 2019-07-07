@@ -2,87 +2,68 @@ import React from "react";
 import { SimpleCard } from "../ui/Cards/Cards";
 import { Steps } from "../ui/Steps/Steps";
 import { Button } from "../ui/Buttons/Buttons";
-import { ChooseDeviceSlider } from "../ui/Sliders/Sliders";
 import { Input } from "../ui/Inputs/Inputs";
 
-export class AddDevicePopup extends React.Component{
+export class AddItemPopup extends React.Component{
   constructor(props){
     super(props)
+    console.log(props)
     this.state = {
       id: '',
-      type: '',
-      name: '',
-      settings: []
+      deviceId: props.deviceId,
+      name: 'Тэг',
+      access: 'read',
+      settings: [],
+      dataType: 'float-32',
+      storageRangeTime: 900
     }
+    
     this.onClose = this.onClose.bind(this)
     this.onChange = this.onChange.bind(this)
     this.onAdd = this.onAdd.bind(this)
   }
+
+  componentWillMount(){
+    const device = this.props.devices.get(this.props.deviceId)
+    if(device){
+      this.setState({type: device.type})
+    }
+  }
+
+  componentWillReceiveProps(nextProps){
+    // console.log(this.props.devices, )
+    if(this.props.devices.size === 0 && nextProps.devices.size > 0){
+      const device = nextProps.devices.get(nextProps.deviceId)
+      this.setState({
+        type: device.type
+      })
+    }
+  }
+
   onClose(){
     // this.props.onClose()
-    // this.props.history.push('/system')
     this.props.history.goBack()
   }
   onChange(value, name){
+    console.log(name, value)
     this.setState({[name]: value}, ()=>{console.log(this.state)})
   }
   onAdd(){
-    const {id, type, name, settings} = this.state
-    return this.props.onAdd({id, type, name, settings})
+    const {id, type, name, settings, deviceId, dataType, storageRangeTime} = this.state
+    return this.props.onAdd({id, type, name, settings, deviceId, dataType, storageRangeTime})
   }
   render(){
-
-    const componentsArr = [ChooseDevice, EnterSettings, ConfirmData]
-
+    const device = this.props.devices.get(this.props.deviceId)
+    if(!device || Object.keys(this.props.settings).length === 0) return null
+    const componentsArr = [EnterSettings, ConfirmData]
     return (
-      <div className="add-device-popup">
+      <div className="add-item-popup">
         <div>
           <SimpleCard>
             <Button onClick={this.onClose}>Закрыть</Button>
-            <Steps steps={componentsArr} onChange={this.onChange} onAdd={this.onAdd} onClose={this.onClose} state={this.state} settings={this.props.settings} />
+            <Steps steps={componentsArr} onChange={this.onChange} onAdd={this.onAdd} state={this.state} settings={this.props.settings} />
           </SimpleCard>
         </div>
-      </div>
-    )
-  }
-}
-
-// need to get devices arr from service
-const deviceTypes = [
-  {
-    id: 'modbus',
-    name: 'Modbus',
-    description: 'Устройство Modbus TCP',
-    img: 'kv-006.png'
-  },
-  {
-    id: 'lorawan',
-    name: 'Lorawan',
-    description: 'Устройство LoRaWan',
-    img: 'kv-006.png'
-  }
-]
-class ChooseDevice extends React.Component{
-  render(){
-    console.log(this.props)
-    return(
-      <div>
-        <h3>Выберите устройство</h3>
-        <div className="choose-device-slider">
-          <ChooseDeviceSlider slides={deviceTypes} value={this.props.state.type} component={ChooseDeviceItem} onChange={value=>this.props.onChange(value, 'type')} />
-        </div>
-      </div>
-    )
-  }  
-}
-class ChooseDeviceItem extends React.Component{
-  render(){
-    return(
-      <div className='choose-device-content'>
-        <img src={"/img/"+this.props.img} alt=""/>
-        <h5>{this.props.name}</h5>
-        <p>{this.props.description}</p>
-        <input type="radio" name="device-id" checked={this.props.value===this.props.id} onChange={e=>this.props.onChange(this.props.id)}/>
       </div>
     )
   }
@@ -96,37 +77,43 @@ class EnterSettings extends React.Component{
   }
 
   componentWillMount(){
-    if(!this.props.settings || !this.props.state.type) return
+    console.log(this.props.settings, this.props.state.type)
     const settings = this.props.settings[this.props.state.type]
-    settings.forEach(set => {
-      this.setState({[set.name]: set['default-value']})
-    })
+    
+    var result = settings.reduce(function(sum, set) {
+      sum[set.name] = set['default-value']
+      return sum
+    }, {})
+
+    this.setState(result, ()=> this.props.onChange(this.state, 'settings') )
   }
 
   onChangeSettings(value, name){
-    console.log(this.state)
     this.setState({
       [name]: value
     }, () => {
-      this.props.onChange(this.state, "settings")
+      this.props.onChange(this.state, 'settings')
     })
   }
 
   render(){
-    // console.log(this.props.settings)
-    // change settings name id
-    if(!this.props.settings || !this.props.state.type) return null
+    if(Object.keys(this.props.settings).length === 0 || !this.props.state.type) return null
     const settings = this.props.settings[this.props.state.type]
+
     console.log(settings)
+
     return(
       <React.Fragment>
         <Input data={{type:'text',name:'id'}} value={this.props.state.id} onChange={this.props.onChange} />
         <Input data={{type:'text',name:'name'}} value={this.props.state.name} onChange={this.props.onChange} />
+        <Input data={{type:'text',name:'dataType'}} value={this.props.state.dataType} onChange={this.props.onChange} />
+        <Input data={{type:'text',name:'storageRangeTime'}} value={this.props.state.storageRangeTime} onChange={this.props.onChange} />
+        <Input data={{type:'enum',name:'access',values:['read','read-write','write']}} value={this.props.state.access} onChange={this.props.onChange} />
         <div>
           {
             settings.map((set, i)=>
               <Input key={i} data={set} value={this.state[set.name]} onChange={this.onChangeSettings} />
-              //<InputText key={i} label={set.name} type="text" name={set.name} value={this.state[set.name]} onChange={this.onChangeSettings} />
+              //<InputText key={i} label={set.name} type="text" extraType={set.type} name={set.name} value={this.state[set.name]} onChange={this.onChangeSettings} />
             )
           }
         </div>
@@ -152,7 +139,6 @@ class ConfirmData extends React.Component{
     return(
       <div>
         <h3>Подтвердите</h3>
-        <div><label>Устройство <span>{this.props.state.type}</span></label></div>
         <div><label>Идентификатор <span>{this.props.state.id}</span></label></div>
         <div><label>Имя <span>{this.props.state.name}</span></label></div>
         <Button onClick={this.onAdd}>Подтверждаю</Button>

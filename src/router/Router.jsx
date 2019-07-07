@@ -20,6 +20,7 @@ export default class Router extends Component {
           <Route path="/auth" component={AuthScreen} />
           <PrivateRoute path="/system" component={SystemScreen} store={store} />
           <PrivateRoute path="/device/:id" component={SystemScreen} store={store} />
+          <PrivateRoute path="/item/:id" component={SystemScreen} store={store} />
           <PrivateRoute path="/devices/:id" component={DeviceScreen} store={store} />
           <Route component={NotFoundScreen} />
         </Switch>

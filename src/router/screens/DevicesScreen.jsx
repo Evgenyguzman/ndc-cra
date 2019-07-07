@@ -3,7 +3,6 @@ import { DeviceListContainer, addDevicePopupContainer } from "../../containers/S
 import { SimpleLink } from "../../components/ui/Links/Links";
 import { Button } from "../../components/ui/Buttons/Buttons";
 import { PrivateRoute } from "../PrivateRoute";
-import { AddDevicePopup } from "../../components/system/AddDevicePopup";
 
 export function DevicesScreen({store}) {
   return (
@@ -12,10 +11,10 @@ export function DevicesScreen({store}) {
       <DeviceListContainer />
       <div>
         <Button>
-          <SimpleLink to="/system/add">Добавить устройство</SimpleLink>
+          <SimpleLink to="/system/addDevice">Добавить устройство</SimpleLink>
         </Button>
       </div>
-      <PrivateRoute path="/system/add" component={addDevicePopupContainer} />
+      <PrivateRoute path="/system/addDevice" component={addDevicePopupContainer} />
     </div>
   )
 }

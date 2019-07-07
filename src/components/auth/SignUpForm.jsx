@@ -1,5 +1,5 @@
 import React from "react";
-import { InputText, InputCheckbox } from "../ui/Inputs";
+import { Input, InputCheckbox } from "../ui/Inputs/Inputs";
 import { Button } from "../ui/Buttons/Buttons";
 
 export class SignUpForm extends React.Component{
@@ -25,7 +25,7 @@ export class SignUpForm extends React.Component{
         <div>
           <h3>Sign Up</h3>
           <div>
-            <InputText name="email" value={email} onChange={(email)=>this.setState({email})} />
+            {/* <InputText name="email" value={email} onChange={(email)=>this.setState({email})} />
             <InputText type="password" name="password" value={password} onChange={(password)=>this.setState({password})} />
             {(requestId)
               ?
@@ -44,7 +44,7 @@ export class SignUpForm extends React.Component{
               :
                 ''
             }
-            <Button onClick={this.onSubmit}>Next</Button>
+            <Button onClick={this.onSubmit}>Next</Button> */}
           </div>
         </div>
       </div>
