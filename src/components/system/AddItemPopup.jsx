@@ -9,13 +9,13 @@ export class AddItemPopup extends React.Component{
     super(props)
     console.log(props)
     this.state = {
-      id: '',
-      deviceId: props.deviceId,
-      name: 'Тэг',
-      access: 'read',
-      settings: [],
-      dataType: 'float-32',
-      storageRangeTime: 900
+      'id': '',
+      'device-id': props.deviceId,
+      'name': 'Тэг',
+      'access': 'read',
+      'settings': [],
+      'data-type': 'float-32',
+      'storage-range-time': 900
     }
     
     this.onClose = this.onClose.bind(this)
@@ -29,7 +29,6 @@ export class AddItemPopup extends React.Component{
       this.setState({type: device.type})
     }
   }
-
   componentWillReceiveProps(nextProps){
     // console.log(this.props.devices, )
     if(this.props.devices.size === 0 && nextProps.devices.size > 0){
@@ -49,8 +48,12 @@ export class AddItemPopup extends React.Component{
     this.setState({[name]: value}, ()=>{console.log(this.state)})
   }
   onAdd(){
-    const {id, type, name, settings, deviceId, dataType, storageRangeTime} = this.state
-    return this.props.onAdd({id, type, name, settings, deviceId, dataType, storageRangeTime})
+    // сократить запись
+    const {id, type, name, settings, access} = this.state
+    const deviceId = this.state['device-id']
+    const dataType = this.state['data-type']
+    const storageRangeTime = this.state['storage-range-time']
+    return this.props.onAdd({id, type, name, settings, deviceId, dataType, storageRangeTime, access})
   }
   render(){
     const device = this.props.devices.get(this.props.deviceId)
@@ -97,23 +100,28 @@ class EnterSettings extends React.Component{
   }
 
   render(){
-    if(Object.keys(this.props.settings).length === 0 || !this.props.state.type) return null
-    const settings = this.props.settings[this.props.state.type]
+    let { common, protocol } = this.props.settings
+    if(Object.keys(protocol).length === 0 || !this.props.state.type) return null
+    protocol = protocol[this.props.state.type]
 
-    console.log(settings)
+    console.log(common, protocol)
 
     return(
       <React.Fragment>
         <Input data={{type:'text',name:'id'}} value={this.props.state.id} onChange={this.props.onChange} />
         <Input data={{type:'text',name:'name'}} value={this.props.state.name} onChange={this.props.onChange} />
-        <Input data={{type:'text',name:'dataType'}} value={this.props.state.dataType} onChange={this.props.onChange} />
+        {
+          common.map((set, i)=>
+            <Input key={i} data={set} value={this.props.state[set.name]} onChange={this.props.onChange} />
+          )
+        }
+        {/* <Input data={{type:'text',name:'dataType'}} value={this.props.state.dataType} onChange={this.props.onChange} />
         <Input data={{type:'text',name:'storageRangeTime'}} value={this.props.state.storageRangeTime} onChange={this.props.onChange} />
-        <Input data={{type:'enum',name:'access',values:['read','read-write','write']}} value={this.props.state.access} onChange={this.props.onChange} />
+        <Input data={{type:'enum',name:'access',values:['read','read-write','write']}} value={this.props.state.access} onChange={this.props.onChange} /> */}
         <div>
           {
-            settings.map((set, i)=>
+            protocol.map((set, i)=>
               <Input key={i} data={set} value={this.state[set.name]} onChange={this.onChangeSettings} />
-              //<InputText key={i} label={set.name} type="text" extraType={set.type} name={set.name} value={this.state[set.name]} onChange={this.onChangeSettings} />
             )
           }
         </div>

@@ -2,7 +2,6 @@ import React from "react";
 import C from '../store/constants'
 // import OwenCloudService from "./NewDayCloudService";
 import WsCloudService from "./WsCloudService";
-import { Preloader } from "../components/ui/Preloaders/Preloaders";
 
 export class WsCloudConnector extends React.Component{
 
@@ -28,6 +27,10 @@ export class WsCloudConnector extends React.Component{
     this.wsCloudService.onItemChanged = (item) => {
       console.log(item)
       dispatch({type: C.UPDATE_ITEM, data: item})
+
+      // if value changed and now is in chart time range
+      // add to chart values
+
     }
     this.wsCloudService.onDeviceAdded = (device) => {
       console.log(device)
@@ -52,7 +55,6 @@ export class WsCloudConnector extends React.Component{
       })
       dispatch({type: C.SYSTEM_DISCONNECTED})
       this.connect()
-      dispatch({type: C.SYSTEM_CONNECTED})
     }
 
     this.connect()
@@ -60,13 +62,15 @@ export class WsCloudConnector extends React.Component{
   }
 
   async connect(){
+    const { dispatch } = this.props.store
+    dispatch({type: C.SYSTEM_DISCONNECTED})
     const res = await this.wsCloudService.connect(this.host)
-    console.log(res)
+    console.log('Result of connecting: ' + res)
 
     if(!res) {
       setTimeout(()=>{
         this.connect()
-      }, 5000)
+      }, 15000)
       return
     }
 
@@ -84,7 +88,6 @@ export class WsCloudConnector extends React.Component{
   async getData(){
     const { dispatch } = this.props.store
     dispatch({type: C.SYSTEM_CONNECTED})
-    
     const devices = await this.wsCloudService.getDevices()
     dispatch({type: C.UPDATE_DEVICES, data: devices})
     const items = await this.wsCloudService.getItems()
@@ -93,15 +96,12 @@ export class WsCloudConnector extends React.Component{
     dispatch({type: C.UPDATE_DEVICE_SETTINGS, data: deviceSettings})
     const itemSettings = await this.wsCloudService.getItemSettings()
     dispatch({type: C.UPDATE_ITEM_SETTINGS, data: itemSettings})
-    
-    console.log(devices, items, deviceSettings, itemSettings)
+    const dictionary = await this.wsCloudService.getDictionary()
+    dispatch({type: C.UPDATE_DICTIONARY, data: dictionary})
+    console.log(devices, items, deviceSettings, itemSettings, dictionary)
   } 
 
   render(){
-    if(this.state.isConnected){
-      return null
-    }else{
-      return <Preloader />
-    }
+    return null
   }
 }

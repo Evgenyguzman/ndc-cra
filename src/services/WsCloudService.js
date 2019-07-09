@@ -3,12 +3,7 @@ export default class WsCloudService {
 	static instance = null
 
 	resolve = undefined
-
-	waitForResponse(){
-		return new Promise((res, rej) => {
-			this.resolve = res
-		})
-	}
+	requests = new Map()
 
 	static getInstance(){
 		if(WsCloudService.instance === null){
@@ -51,18 +46,22 @@ export default class WsCloudService {
 			this.resolve(true)
 		})
 		this.socket.addEventListener('error', (event) => {
+			// console.log('ws error', event)
 			if (this.state === 'connecting') this.resolve(false)
 			if (this.state === 'authorized') {
 				this.onDisconnect()
 			}
-	    this.state = 'disconnected'
+			this.state = 'disconnected'
+			this.resolve(false)
 		})
 		this.socket.addEventListener('close', (event) => {
+			// console.log('ws close', event)
 			if (this.state === 'connecting') this.resolve(false)
 			if (this.state === 'authorized') {
 				this.onDisconnect()
 			}
-	    this.state = 'disconnected'
+			this.state = 'disconnected'
+			this.resolve(false)
 		})
 	  return new Promise((resolve, reject) => { 
 			this.resolve = resolve
@@ -120,7 +119,7 @@ export default class WsCloudService {
 	receive(data) {
 		// this.log(data)
 		switch (data.type) {
-			case 'reply': this.onReply(data.data); break
+			case 'reply': this.onReply(data); break
 			case 'device': this.onDeviceChanged(data.device); break
 			case 'item': this.onItemChanged(data.item); break
 			case 'new-device': this.onDeviceAdded(data.device); break
@@ -135,13 +134,13 @@ export default class WsCloudService {
 		console.log('Hydra: ', text)
 	}
 
-	onDisconnect() {
-	}
-
   onReply(data) {
-		if(this.resolve !== undefined){
-			this.resolve(data)
-			this.resolve = undefined
+		const requestId = data['request-id']
+		// console.log(requestId, this.requests)
+		const request = this.requests.get(requestId)
+		if(request){
+			request(data.data)
+			this.requests.delete(requestId)
 		}
   }
 
@@ -157,6 +156,8 @@ export default class WsCloudService {
   }
 	onItemRemoved(data){
 	}
+	onDisconnect() {
+	}
 	
 	checkDefined(object, fields) {
 		for (let i = 0; i < fields.length; i++)
@@ -166,24 +167,24 @@ export default class WsCloudService {
 	
 
 	async getDevices(){
-		return await this.sendWithResponse(JSON.stringify({
+		return await this.sendWithResponse({
 			type: 'get-devices'
-		}))
+		})
 	}
 	async getDeviceSettings(){
-		return await this.sendWithResponse(JSON.stringify({
+		return await this.sendWithResponse({
 			type: 'get-device-settings'
-		}))
+		})
 	}
 	async addDevice({name, type, id, settings}){
 		console.log(name, type, id, settings)
-		return await this.sendWithResponse(JSON.stringify({
+		return await this.sendWithResponse({
 			'type': 'add-device',
 			'device-name': name,  
 			'device-type': type, 
 			'device-id': id, 
 			'device-settings': settings 
-		}))
+		})
 	}
 	async changeDevice(data){
 		const msg = {
@@ -191,28 +192,28 @@ export default class WsCloudService {
 			...data // name, settings
 		}
 		console.log(msg)
-		return await this.sendWithResponse(JSON.stringify(msg))
+		return await this.sendWithResponse(msg)
 	}
 	async removeDevice(id){
-		return await this.sendWithResponse(JSON.stringify({
+		return await this.sendWithResponse({
 			'type': 'remove-device', 
 			'device-id': id
-		}))
+		})
 	}
 
 
 	async getItems(){
-		return await this.sendWithResponse(JSON.stringify({
+		return await this.sendWithResponse({
 			type: 'get-items'
-		}))
+		})
 	}
 	async getItemSettings(){
-		return await this.sendWithResponse(JSON.stringify({
+		return await this.sendWithResponse({
 			type: 'get-item-settings'
-		}))
+		})
 	}
-	async addItem({name, type, id, settings, deviceId, dataType, storageRangeTime}){
-		return await this.sendWithResponse(JSON.stringify({
+	async addItem({name, type, id, settings, deviceId, dataType, storageRangeTime, access}){
+		return await this.sendWithResponse({
 			'type': 'add-item',
 			'item-name': name,  
 			'item-type': type, 
@@ -220,8 +221,9 @@ export default class WsCloudService {
 			'item-settings': settings,
 			'device-id': deviceId,
 			'item-data-type': dataType,
-			'item-storage-range-time': storageRangeTime
-		}))
+			'item-storage-range-time': storageRangeTime,
+			'access': access
+		})
 	}
 	async changeItem(data){
 		const msg = {
@@ -229,13 +231,13 @@ export default class WsCloudService {
 			...data // name, settings, data-type, storage-time-range, ...
 		}
 		console.log(msg)
-		return await this.sendWithResponse(JSON.stringify(msg))
+		return await this.sendWithResponse(msg)
 	}
 	async removeItem(id){
-		return await this.sendWithResponse(JSON.stringify({
+		return await this.sendWithResponse({
 			'type': 'remove-item', 
 			'item-id': id
-		}))
+		})
 	}
 
 	async getItemDataStorage(data){
@@ -243,15 +245,26 @@ export default class WsCloudService {
 			'type': 'get-item-data-storage',
 			...data
 		}
-		console.log(msg)
-		return await this.sendWithResponse(JSON.stringify(msg))
+		// console.log(msg)
+		return await this.sendWithResponse(msg)
 	}
 
-	async sendWithResponse(string){
-		// return new Promise((res, rej) => {
-		this.socket.send(string)
-		return await this.waitForResponse()
-		// })
+	async getDictionary(){
+		return await this.sendWithResponse({
+			'type': 'get-dictionary'
+		})
+	}
+
+	async sendWithResponse(obj){
+		const requestId = Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 6)
+		obj['request-id'] = requestId
+
+		// try catch and return error from catch
+		this.socket.send(JSON.stringify(obj))
+
+		return new Promise((res, rej) => {
+			this.requests.set(requestId, res)
+		})
 	}
     
   changeValue(thing, item, value){

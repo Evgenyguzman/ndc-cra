@@ -10,6 +10,7 @@ import { AddDevicePopup } from '../components/system/AddDevicePopup';
 import { AddItemPopup } from '../components/system/AddItemPopup';
 import { Item } from '../components/system/Item';
 import { Items } from '../components/device/Items';
+import { Chart } from '../components/device/Chart';
 
 export const SystemContainer = connect(
   state => ({
@@ -99,6 +100,16 @@ export const ItemsContainer = connect(
   })
 )(Items)
 
+export const ChartContainer = connect( 
+  state => ({}),
+  dispatch => ({
+    async getItemDataStorage(data) {
+      const wsCloudService = WsCloudService.getInstance()
+      return await wsCloudService.getItemDataStorage(data)
+    }
+  })
+)(Chart)
+
 export const DeviceListContainer = connect( 
   state => ({
     devices: Array.from(state.system.devices.values())
@@ -140,9 +151,10 @@ export const addItemPopupContainer = connect(
   }),
   dispatch => ({
     async onAdd(item) {
+      // console.log(item)
       const wsCloudService = WsCloudService.getInstance()
       const res = await wsCloudService.addItem(item)
-      console.log(res.item)
+      console.log(res)
       if(!res.error){
         // dispatch({ type: C.ADD_ITEM, data: res.item, deviceId: item.deviceId })
         return true

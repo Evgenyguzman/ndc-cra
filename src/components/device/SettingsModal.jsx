@@ -86,13 +86,18 @@ export class SettingsForm extends React.Component{
 
   render(){
     const settings = this.state
+    const { schema } = this.props
+    // console.log(schema, settings)
     return(
       <React.Fragment>
         { this.props.children }
         <div className="settings">
-          {Object.keys(settings).map((key) =>
-            <Input key={key} data={{type:'text',name:key}} value={settings[key]} onChange={this.onChange} />
+          {schema.map((set, i)=>
+            <Input key={i} data={set} value={settings[set.name]} onChange={this.onChange} />
           )}
+          {/* {Object.keys(settings).map((key) =>
+            <Input key={key} data={{type:'text',name:key}} value={settings[key]} onChange={this.onChange} />
+          )} */}
         </div>
         <Button onClick={this.onSave}>save</Button>
       </React.Fragment>

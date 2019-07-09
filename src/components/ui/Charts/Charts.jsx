@@ -1,6 +1,8 @@
 import React from "react";
 import {Line} from 'react-chartjs-2';
 
+import './Charts.sass';
+
 const range = ((min, max , step = 1) => {
   const arr = [];
   const totalSteps = Math.floor((max - min)/step);
@@ -15,17 +17,15 @@ const getRandom = (min, max) => {
 // arr.map((key)=>key+1)
 
 export class LineChart extends React.Component{
-  constructor(props){
-    super(props)
-  }
   render(){
 
     // const data = this.props.data
     const data = {
-      labels: range(1,this.props.data.length),
+      // labels: range(1,this.props.data.length),
+      labels: this.props.labels||range(1,this.props.data.length),
       datasets: [
         {
-          label: 'My First dataset',
+          label: 'Значение',
           fill: false,
           lineTension: 0.1,
           backgroundColor: 'rgba(75,192,192,0.4)',

@@ -1,6 +1,6 @@
 import React from "react";
-import { Input, InputCheckbox } from "../ui/Inputs/Inputs";
-import { Button } from "../ui/Buttons/Buttons";
+// import { Input, InputCheckbox } from "../ui/Inputs/Inputs";
+// import { Button } from "../ui/Buttons/Buttons";
 
 export class SignUpForm extends React.Component{
   constructor(props){
@@ -19,7 +19,7 @@ export class SignUpForm extends React.Component{
     this.onSubmit = this.onSubmit.bind(this)
   }
   render(){
-    const {requestId, email, password, verifyCode, captchaBase64, name, surname, acceptAgreement} = this.state
+    // const {requestId, email, password, verifyCode, captchaBase64, name, surname, acceptAgreement} = this.state
     return (
       <div className="form">
         <div>

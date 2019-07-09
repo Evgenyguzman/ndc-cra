@@ -17,7 +17,7 @@ export class Device extends React.Component{
   }
   render(){
     const {token} = this.props.user
-    const {devices, items} = this.props.system
+    const {devices, items, deviceSettings} = this.props.system
     const {id} = this.props
 
     const device = devices.get(id)
@@ -27,6 +27,8 @@ export class Device extends React.Component{
     // console.log(device)
     // console.log(items)
   
+    const schema = deviceSettings[device.type]
+
     const parameters = device.items.map(itemId => {
       return items.get(itemId)
     })
@@ -54,7 +56,7 @@ export class Device extends React.Component{
               <Button onClick={()=>this.props.onRemove(device.id, token)}>Удалить</Button>
             </div>
             <SettingsModal>
-              <SettingsForm type="device-id" id={device.id} settings={settings} onChange={this.props.onChange} />
+              <SettingsForm type="device-id" id={device.id} settings={settings} schema={schema} onChange={this.props.onChange} />
             </SettingsModal>
           </SimpleCard>
           

@@ -100,6 +100,9 @@ const systemInfo = (state = {}, action) => {
     case C.SYSTEM_DISCONNECTED:
       new_state.isConnected = false
       return new_state
+    case C.UPDATE_DICTIONARY:
+      new_state.dictionary = action.data
+      return new_state
     default:
       return state
   }

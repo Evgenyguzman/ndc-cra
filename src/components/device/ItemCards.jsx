@@ -20,7 +20,7 @@ export class ItemCards extends React.Component{
 
 class Item extends React.Component{
   render(){
-    const { type, access, value } = this.props.item
+    const { type, access } = this.props.item
     // bytemask!
     if(type==='boolean'){
       if(access==='read'){
