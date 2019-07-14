@@ -35,7 +35,7 @@ export class Chart extends React.Component{
     this.setState({
       endDate: date
     }, this.getData)
-    }
+  }
 
   async getData(){
     const { startDate, endDate } = this.state
@@ -89,6 +89,7 @@ export class Chart extends React.Component{
 
   componentWillMount(){
     this.getData()
+    setInterval(this.getData, 30000)
   }
 
   render(){
