@@ -3,11 +3,12 @@ import { SimpleCard } from "../ui/Cards/Cards";
 import { Steps } from "../ui/Steps/Steps";
 import { Button } from "../ui/Buttons/Buttons";
 import { Input } from "../ui/Inputs/Inputs";
+import { Form } from "../ui/Form/Form";
 
 export class AddItemPopup extends React.Component{
   constructor(props){
     super(props)
-    console.log(props)
+    // console.log(props)
     this.state = {
       'id': '',
       'device-id': props.deviceId,
@@ -44,8 +45,10 @@ export class AddItemPopup extends React.Component{
     this.props.history.goBack()
   }
   onChange(value, name){
-    console.log(name, value)
-    this.setState({[name]: value}, ()=>{console.log(this.state)})
+    // console.log(name, value)
+    this.setState({[name]: value}, ()=>{
+      //console.log(this.state)
+    })
   }
   onAdd(){
     // сократить запись
@@ -72,31 +75,79 @@ export class AddItemPopup extends React.Component{
   }
 }
 
+// class EnterSettings extends React.Component{
+//   constructor(props){
+//     super(props)
+//     this.state = {}
+//     this.onChangeSettings = this.onChangeSettings.bind(this)
+//   }
+
+//   componentWillMount(){
+//     console.log(this.props.settings, this.props.state.type)
+//     const settings = this.props.settings[this.props.state.type]
+    
+//     var result = settings.reduce(function(sum, set) {
+//       sum[set.name] = set['default-value']
+//       return sum
+//     }, {})
+
+//     this.setState(result, ()=> this.props.onChange(this.state, 'settings') )
+//   }
+
+//   onChangeSettings(value, name){
+//     this.setState({
+//       [name]: value
+//     }, () => {
+//       this.props.onChange(this.state, 'settings')
+//     })
+//   }
+
+//   render(){
+//     let { common, protocol } = this.props.settings
+//     if(Object.keys(protocol).length === 0 || !this.props.state.type) return null
+//     protocol = protocol[this.props.state.type]
+
+//     console.log(common, protocol)
+
+//     return(
+//       <React.Fragment>
+//         <Input data={{type:'text',name:'id'}} value={this.props.state.id} onChange={this.props.onChange} />
+//         <Input data={{type:'text',name:'name'}} value={this.props.state.name} onChange={this.props.onChange} />
+//         {
+//           common.map((set, i)=>
+//             <Input key={i} data={set} value={this.props.state[set.name]} onChange={this.props.onChange} />
+//           )
+//         }
+//         {/* <Input data={{type:'text',name:'dataType'}} value={this.props.state.dataType} onChange={this.props.onChange} />
+//         <Input data={{type:'text',name:'storageRangeTime'}} value={this.props.state.storageRangeTime} onChange={this.props.onChange} />
+//         <Input data={{type:'enum',name:'access',values:['read','read-write','write']}} value={this.props.state.access} onChange={this.props.onChange} /> */}
+//         <div>
+//           {
+//             protocol.map((set, i)=>
+//               <Input key={i} data={set} value={this.state[set.name]} onChange={this.onChangeSettings} />
+//             )
+//           }
+//         </div>
+//       </React.Fragment>
+//     )
+//   }  
+// }
+
 class EnterSettings extends React.Component{
   constructor(props){
     super(props)
     this.state = {}
-    this.onChangeSettings = this.onChangeSettings.bind(this)
+    this.onReady = this.onReady.bind(this)
   }
 
-  componentWillMount(){
-    console.log(this.props.settings, this.props.state.type)
-    const settings = this.props.settings[this.props.state.type]
-    
-    var result = settings.reduce(function(sum, set) {
-      sum[set.name] = set['default-value']
-      return sum
-    }, {})
-
-    this.setState(result, ()=> this.props.onChange(this.state, 'settings') )
-  }
-
-  onChangeSettings(value, name){
-    this.setState({
-      [name]: value
-    }, () => {
-      this.props.onChange(this.state, 'settings')
-    })
+  onReady(data){
+    console.log("Ready: ", data)
+    this.props.onChange(data.id, "id")
+    this.props.onChange(data.name, "name")
+    this.props.onChange(data['data-type'], 'data-type')
+    this.props.onChange(data['storage-range-time'], 'storage-range-time')
+    this.props.onChange(data['access'], 'access')
+    this.props.onChange(data.settings, "settings")
   }
 
   render(){
@@ -104,31 +155,32 @@ class EnterSettings extends React.Component{
     if(Object.keys(protocol).length === 0 || !this.props.state.type) return null
     protocol = protocol[this.props.state.type]
 
-    console.log(common, protocol)
+    // console.log(common, protocol)
+
+    const schema = [
+      {type:'text',name:'id'},
+      {type:'text',name:'name',minLength:1},
+      ...common
+    ]
+    const values = {}
+
+    const forms = [{
+      name: 'settings',
+      fields: protocol, 
+      values: {},
+      autoconfirm: true
+    }]
 
     return(
       <React.Fragment>
-        <Input data={{type:'text',name:'id'}} value={this.props.state.id} onChange={this.props.onChange} />
-        <Input data={{type:'text',name:'name'}} value={this.props.state.name} onChange={this.props.onChange} />
-        {
-          common.map((set, i)=>
-            <Input key={i} data={set} value={this.props.state[set.name]} onChange={this.props.onChange} />
-          )
-        }
-        {/* <Input data={{type:'text',name:'dataType'}} value={this.props.state.dataType} onChange={this.props.onChange} />
-        <Input data={{type:'text',name:'storageRangeTime'}} value={this.props.state.storageRangeTime} onChange={this.props.onChange} />
-        <Input data={{type:'enum',name:'access',values:['read','read-write','write']}} value={this.props.state.access} onChange={this.props.onChange} /> */}
         <div>
-          {
-            protocol.map((set, i)=>
-              <Input key={i} data={set} value={this.state[set.name]} onChange={this.onChangeSettings} />
-            )
-          }
+          <Form fields={schema} values={values} forms={forms} autoconfirm={true} onConfirm={({data})=>this.onReady(data)} />
         </div>
       </React.Fragment>
     )
   }  
 }
+
 class ConfirmData extends React.Component{
   constructor(props){
     super(props)
@@ -139,7 +191,7 @@ class ConfirmData extends React.Component{
   }
   async onAdd(){
     const result = await this.props.onAdd()
-    console.log(result)
+    // console.log(result)
     this.setState({result})
   }
 

@@ -9,12 +9,13 @@ export class Input extends React.Component{
     const {data} = this.props
     // console.log(data.type, data.name)
     // use hoc
+
     if(data.type === 'boolean'){
       // switch
       return withLabel(<Switch name={data.name} value={this.props.value} onChange={this.props.onChange} />, data.name)
     }else if(data.type === 'text'){
       // input type text
-      return withLabel(<InputText type="text" name={data.name} value={this.props.value} onChange={this.props.onChange} />, data.name)
+      return withLabel(<InputText type="text" name={data.name} value={this.props.value} minLength={data.minLength} onChange={this.props.onChange} />, data.name)
     }else if(data.type === 'integer'){
       // input type number
       return withLabel(<InputInteger name={data.name} value={this.props.value} min={data.min} max={data.max} onChange={this.props.onChange} />, data.name)
@@ -38,7 +39,7 @@ const withLabel = (component, label) => {
   )
 }
 
-class InputText extends React.Component{
+export class InputText extends React.Component{
   constructor(props){
     super(props)
     this.state = {
@@ -46,12 +47,24 @@ class InputText extends React.Component{
     }
     this.onChangeCompleted = this.onChangeCompleted.bind(this)
   }
+
+  componentWillMount(){
+    this.onChangeCompleted()
+  }
+
   componentWillReceiveProps(nextProps){
     this.setState({value: nextProps.value})
   }
   onChangeCompleted(){
     // validate
-    this.props.onChange(this.state.value, this.props.name)
+    const {value} = this.state
+    const {onChange, name, minLength} = this.props
+    if(value.length < minLength){
+      onChange(value, name, true)
+    }else{
+      onChange(value, name, false)
+    }
+    
   }
   render(){
     return (
@@ -62,21 +75,26 @@ class InputText extends React.Component{
   }
 }
 
-class Switch extends React.Component{
+export class Switch extends React.Component{
+  componentWillMount(){
+    const { name, value } = this.props
+    const isChecked = typeof value === 'boolean' ? value : value === 'true'
+    this.props.onChange(isChecked, name, false)
+  }
   render() {
     const { name, value } = this.props
     const isChecked = typeof value === 'boolean' ? value : value === 'true' 
     return (
       <React.Fragment>
         <label className="switch">
-          <input type="checkbox" name={name} checked={isChecked} onChange={(e) => {this.props.onChange((e.target.checked), name)}} />
+          <input type="checkbox" name={name} checked={isChecked} onChange={(e) => {this.props.onChange(e.target.checked, name, false)}} />
           <span className="slider round"></span>
         </label>
       </React.Fragment>
     )
   }
 }
-class InputIP extends React.Component{
+export class InputIP extends React.Component{
   constructor(props){
     super(props)
     this.state = {
@@ -84,16 +102,23 @@ class InputIP extends React.Component{
     }
     this.onChangeCompleted = this.onChangeCompleted.bind(this)
   }
+  componentWillMount(){
+    this.onChangeCompleted()
+  }
   componentWillReceiveProps(nextProps){
     this.setState({value: nextProps.value})
   }
   onChangeCompleted(){
     // validate
-    const regexp = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)(\:([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5]))?$/gm
+    const regexp = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\:([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])?$/gm
     const res = regexp.test(this.state.value)
-    console.log(res)
+    // console.log(res)
+    if(res){
+      this.props.onChange(this.state.value, this.props.name, !res)
+    }else{
+      this.props.onChange(this.state.value, this.props.name, !res)
+    }
 
-    this.props.onChange(this.state.value, this.props.name)
   }
   render(){
     return (
@@ -103,10 +128,15 @@ class InputIP extends React.Component{
     )
   }
 }
-class InputInteger extends React.Component{
+export class InputInteger extends React.Component{
   constructor(props){
     super(props)
     this.onChange = this.onChange.bind(this)
+  }
+
+  componentWillMount(){
+    const { name, value } = this.props
+    this.onChange({target:{name, value}})
   }
 
   onChange(e){
@@ -114,7 +144,8 @@ class InputInteger extends React.Component{
     const {min, max} = this.props
     if(value < min) value = min
     if(value > max) value = max
-    this.props.onChange(value, name)
+    const isError = value < min || value > max
+    this.props.onChange(value, name, isError)
   }
 
   render() {
@@ -126,7 +157,11 @@ class InputInteger extends React.Component{
     )
   }
 }
-class Enum extends React.Component {
+export class Enum extends React.Component {
+  componentWillMount(){
+    const { name, value } = this.props
+    this.props.onChange(value, name, false) 
+  }
   render() {
     const { name, value, values } = this.props
 
@@ -150,7 +185,7 @@ class Enum extends React.Component {
         <Select
           value={ valueObj }
           //defaultValue={ value }
-          onChange={ (value)=>{this.props.onChange(value.value, name)} }
+          onChange={ (value)=>{this.props.onChange(value.value, name, false)} }
           options={ options }
         />
       </React.Fragment>

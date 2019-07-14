@@ -5,6 +5,7 @@ import { ItemsContainer } from "../../containers/SystemContainers";
 import { SettingsModal, SettingsForm } from "../device/SettingsModal";
 import { SimpleLink } from "../ui/Links/Links";
 import { Input } from "../ui/Inputs/Inputs";
+import { Form } from "../ui/Form/Form";
 
 export class Device extends React.Component{
   constructor(props){
@@ -49,7 +50,7 @@ export class Device extends React.Component{
           <SimpleCard>
             <div className="device-title"> 
               <h1>{device.name}</h1>
-              <Input data={{type:'text',name:'name'}} value={device.name} onChange={(val, name)=>{this.props.onChange({[name]: val, 'device-id': device.id})}} />
+              <Form fields={[{type: 'text', name: 'name'}]} values={{name: device.name}} autoconfirm={true}  onConfirm={({data})=>this.props.onChange({'device-id': device.id, ...data})} />
               <h3>{device.id}</h3>
               <h3>{device.type}</h3>
               <b>{device.online === true ? 'Online' : 'Было онлайн' + device['last-online']}</b>

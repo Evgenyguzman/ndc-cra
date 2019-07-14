@@ -11,9 +11,9 @@ export class Items extends React.Component{
         <SimpleCard>
           <ItemsList parameters={this.props.parameters} link={this.props.link} deleteBtn={this.props.deleteBtn} onRemove={this.props.onRemove} deviceId={this.props.deviceId} />
         </SimpleCard>
-        <SimpleCard>
+        {/* <SimpleCard>
           <ItemCards parameters={this.props.parameters} />
-        </SimpleCard>
+        </SimpleCard> */}
       </React.Fragment>
     )
   }

@@ -5,6 +5,7 @@ import { Input } from "../ui/Inputs/Inputs";
 import { SettingsModal, SettingsForm } from "../device/SettingsModal";
 import { SimpleLink } from "../ui/Links/Links";
 import { ChartContainer } from "../../containers/SystemContainers";
+import { Form } from "../ui/Form/Form";
 
 export class Item extends React.Component{
   constructor(props){
@@ -20,7 +21,7 @@ export class Item extends React.Component{
     const {id} = this.props
     const item = items.get(id)
     // // redirect to system if no deice with such id
-    if(!item) return null
+    if(!item || Object.keys(itemSettings).length === 0) return null
     const device = devices.get(item['device-id'])
     const isOnline = device ? device.online : false
 
@@ -36,22 +37,16 @@ export class Item extends React.Component{
               <h1>{item.name}</h1>
               {isOnline ? 'Online' : 'Offline'}
               <SimpleLink to={"/device/" + item['device-id']}>{item['device-id']}</SimpleLink>
-              <Input data={{type:'text',name:'name'}} value={item.name} onChange={(val, name)=>{this.props.onChange({[name]: val, 'item-id': item.id})}} />
+              <Form fields={[{type: 'text', name: 'name', minLength: 1}]} values={{'name': item.name}} autoconfirm={true} onConfirm={({data})=>this.props.onChange({'item-id': item.id, ...data})} />
               <h3>{item.id}</h3>
               <h3>{item.type}</h3>
-
               {
                 common.map((set, i)=>
-                  <Input key={i} data={set} value={item[set.name]} onChange={(val, name)=>{this.props.onChange({[name]: val, 'item-id': item.id})}} />
+                  <Form key={i} fields={[set]} values={{[set.name]: item[set.name]}} autoconfirm={true} onConfirm={({data})=>this.props.onChange({'item-id': item.id, ...data})} />
                 )
               }
-              
-              {/* <Input data={{type:'text',name:'data-type'}} value={item['data-type']} onChange={(val, name)=>{this.props.onChange({[name]: val, 'item-id': item.id})}} />
-              <Input data={{type:'text',name:'storage-range-time'}} value={item['storage-range-time']} onChange={(val, name)=>{this.props.onChange({[name]: val, 'item-id': item.id})}} />
-              <Input data={{type:'enum',name:'access',values:['read','read-write','write']}} value={item.access} onChange={(val, name)=>{this.props.onChange({[name]: val, 'item-id': item.id})}} /> */}
-      
-              <Input data={{type:'text',name:'value'}} value={item.value} onChange={(val, name)=>{this.props.onChange({[name]: val, 'item-id': item.id})}} />
-              <Input data={{type:'text',name:'data'}} value={item.data} onChange={(val, name)=>{this.props.onChange({[name]: val, 'item-id': item.id})}} />
+              <Form fields={[{type: 'text', name: 'value'}]} values={{'value': item.value}} autoconfirm={false} onConfirm={({data})=>this.props.onChange({'item-id': item.id, ...data})} />
+              <Form fields={[{type: 'text', name: 'data'}]} values={{'data': item.data}} autoconfirm={false} onConfirm={({data})=>this.props.onChange({'item-id': item.id, ...data})} />
 
               <Button onClick={()=>this.props.onRemove(item.id)}>Удалить</Button>
             </div>

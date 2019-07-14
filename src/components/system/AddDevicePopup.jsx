@@ -4,6 +4,7 @@ import { Steps } from "../ui/Steps/Steps";
 import { Button } from "../ui/Buttons/Buttons";
 import { ChooseDeviceSlider } from "../ui/Sliders/Sliders";
 import { Input } from "../ui/Inputs/Inputs";
+import { Form } from "../ui/Form/Form";
 
 export class AddDevicePopup extends React.Component{
   constructor(props){
@@ -88,28 +89,63 @@ class ChooseDeviceItem extends React.Component{
   }
 }
 
+// class EnterSettings extends React.Component{
+//   constructor(props){
+//     super(props)
+//     this.state = {}
+//     this.onChangeSettings = this.onChangeSettings.bind(this)
+//   }
+
+//   componentWillMount(){
+//     if(!this.props.settings || !this.props.state.type) return
+//     const settings = this.props.settings[this.props.state.type]
+//     settings.forEach(set => {
+//       this.setState({[set.name]: set['default-value']})
+//     })
+//   }
+
+//   onChangeSettings(value, name){
+//     console.log(this.state)
+//     this.setState({
+//       [name]: value
+//     }, () => {
+//       this.props.onChange(this.state, "settings")
+//     })
+//   }
+
+//   render(){
+//     // console.log(this.props.settings)
+//     // change settings name id
+//     if(!this.props.settings || !this.props.state.type) return null
+//     const settings = this.props.settings[this.props.state.type]
+//     console.log(settings)
+//     return(
+//       <React.Fragment>
+//         <Input data={{type:'text',name:'id'}} value={this.props.state.id} onChange={this.props.onChange} />
+//         <Input data={{type:'text',name:'name'}} value={this.props.state.name} onChange={this.props.onChange} />
+//         <div>
+//           {
+//             settings.map((set, i)=>
+//               <Input key={i} data={set} value={this.state[set.name]} onChange={this.onChangeSettings} />
+//             )
+//           }
+//         </div>
+//       </React.Fragment>
+//     )
+//   }  
+// }
+
 class EnterSettings extends React.Component{
   constructor(props){
     super(props)
-    this.state = {}
-    this.onChangeSettings = this.onChangeSettings.bind(this)
+    this.onReady = this.onReady.bind(this)
   }
 
-  componentWillMount(){
-    if(!this.props.settings || !this.props.state.type) return
-    const settings = this.props.settings[this.props.state.type]
-    settings.forEach(set => {
-      this.setState({[set.name]: set['default-value']})
-    })
-  }
-
-  onChangeSettings(value, name){
-    console.log(this.state)
-    this.setState({
-      [name]: value
-    }, () => {
-      this.props.onChange(this.state, "settings")
-    })
+  onReady(data){
+    console.log("Ready: ", data)
+    this.props.onChange(data.id, "id")
+    this.props.onChange(data.name, "name")
+    this.props.onChange(data.settings, "settings")
   }
 
   render(){
@@ -117,23 +153,31 @@ class EnterSettings extends React.Component{
     // change settings name id
     if(!this.props.settings || !this.props.state.type) return null
     const settings = this.props.settings[this.props.state.type]
-    console.log(settings)
+    // console.log(settings)
+
+    const schema = [
+      {type:'text',name:'id'},
+      {type:'text',name:'name',minLength:1}
+    ]
+    const values = {}
+
+    const forms = [{
+      name: 'settings',
+      fields: settings, 
+      values: {},
+      autoconfirm: true
+    }]
+
     return(
       <React.Fragment>
-        <Input data={{type:'text',name:'id'}} value={this.props.state.id} onChange={this.props.onChange} />
-        <Input data={{type:'text',name:'name'}} value={this.props.state.name} onChange={this.props.onChange} />
         <div>
-          {
-            settings.map((set, i)=>
-              <Input key={i} data={set} value={this.state[set.name]} onChange={this.onChangeSettings} />
-              //<InputText key={i} label={set.name} type="text" name={set.name} value={this.state[set.name]} onChange={this.onChangeSettings} />
-            )
-          }
+          <Form fields={schema} values={values} forms={forms} autoconfirm={true} onConfirm={({data})=>this.onReady(data)} />
         </div>
       </React.Fragment>
     )
   }  
 }
+
 class ConfirmData extends React.Component{
   constructor(props){
     super(props)

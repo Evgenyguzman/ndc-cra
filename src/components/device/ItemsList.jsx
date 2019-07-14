@@ -45,7 +45,9 @@ export class ItemsList extends React.Component{
     return(
       <React.Fragment>
         <h2>Параметры</h2>
-        <div className="relative-table"><SimpleTable parameters={this.props.parameters} columns={columns} /></div>
+        <div className="relative-table">
+          <SimpleTable parameters={this.props.parameters} columns={columns} />
+        </div>
       </React.Fragment>
     )
   }

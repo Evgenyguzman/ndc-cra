@@ -15,7 +15,7 @@ export class WsCloudConnector extends React.Component{
     isConnected: false
   }
 
-  host = 'ws://192.168.0.3:81'
+  host = 'ws://192.168.0.5:8181'
 
   async componentWillMount(){
     this.wsCloudService = WsCloudService.getInstance()
