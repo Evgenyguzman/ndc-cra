@@ -10,14 +10,17 @@ export class Form extends React.Component{
 
     // console.log(props.values)
     this.state = {
-      values: props.values,
+      values: props.values || {},
       errors: {}
     }
     this.onChange = this.onChange.bind(this)
   }
 
   componentWillReceiveProps(nextProps){
-    this.setState({values: nextProps.values})
+    // console.log(nextProps)
+    // if(nextProps.values){
+    //   this.setState({values: nextProps.values})
+    // }
   }
 
   // реагировать на изменения values извне
@@ -49,7 +52,7 @@ export class Form extends React.Component{
     const isError = Object.keys(errors).some((key)=>{
       return errors[key]
     })
-    // console.log(values, errors, isError)
+    console.log(values, errors, isError)
     return(
       <React.Fragment>
         {

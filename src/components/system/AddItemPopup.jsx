@@ -2,7 +2,6 @@ import React from "react";
 import { SimpleCard } from "../ui/Cards/Cards";
 import { Steps } from "../ui/Steps/Steps";
 import { Button } from "../ui/Buttons/Buttons";
-import { Input } from "../ui/Inputs/Inputs";
 import { Form } from "../ui/Form/Form";
 
 export class AddItemPopup extends React.Component{
@@ -162,7 +161,6 @@ class EnterSettings extends React.Component{
       {type:'text',name:'name',minLength:1},
       ...common
     ]
-    const values = {}
 
     const forms = [{
       name: 'settings',
@@ -174,7 +172,7 @@ class EnterSettings extends React.Component{
     return(
       <React.Fragment>
         <div>
-          <Form fields={schema} values={values} forms={forms} autoconfirm={true} onConfirm={({data})=>this.onReady(data)} />
+          <Form fields={schema} forms={forms} autoconfirm={true} onConfirm={({data})=>this.onReady(data)} />
         </div>
       </React.Fragment>
     )

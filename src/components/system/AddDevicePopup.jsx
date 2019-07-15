@@ -3,7 +3,6 @@ import { SimpleCard } from "../ui/Cards/Cards";
 import { Steps } from "../ui/Steps/Steps";
 import { Button } from "../ui/Buttons/Buttons";
 import { ChooseDeviceSlider } from "../ui/Sliders/Sliders";
-import { Input } from "../ui/Inputs/Inputs";
 import { Form } from "../ui/Form/Form";
 
 export class AddDevicePopup extends React.Component{
@@ -13,28 +12,25 @@ export class AddDevicePopup extends React.Component{
       id: '',
       type: '',
       name: '',
-      settings: []
+      settings: {}
     }
     this.onClose = this.onClose.bind(this)
     this.onChange = this.onChange.bind(this)
     this.onAdd = this.onAdd.bind(this)
   }
   onClose(){
-    // this.props.onClose()
     // this.props.history.push('/system')
     this.props.history.goBack()
   }
   onChange(value, name){
-    this.setState({[name]: value}, ()=>{console.log(this.state)})
+    this.setState({[name]: value})
   }
   onAdd(){
-    const {id, type, name, settings} = this.state
-    return this.props.onAdd({id, type, name, settings})
+    return this.props.onAdd(this.state)
   }
+
   render(){
-
     const componentsArr = [ChooseDevice, EnterSettings, ConfirmData]
-
     return (
       <div className="add-device-popup">
         <div>
@@ -89,52 +85,6 @@ class ChooseDeviceItem extends React.Component{
   }
 }
 
-// class EnterSettings extends React.Component{
-//   constructor(props){
-//     super(props)
-//     this.state = {}
-//     this.onChangeSettings = this.onChangeSettings.bind(this)
-//   }
-
-//   componentWillMount(){
-//     if(!this.props.settings || !this.props.state.type) return
-//     const settings = this.props.settings[this.props.state.type]
-//     settings.forEach(set => {
-//       this.setState({[set.name]: set['default-value']})
-//     })
-//   }
-
-//   onChangeSettings(value, name){
-//     console.log(this.state)
-//     this.setState({
-//       [name]: value
-//     }, () => {
-//       this.props.onChange(this.state, "settings")
-//     })
-//   }
-
-//   render(){
-//     // console.log(this.props.settings)
-//     // change settings name id
-//     if(!this.props.settings || !this.props.state.type) return null
-//     const settings = this.props.settings[this.props.state.type]
-//     console.log(settings)
-//     return(
-//       <React.Fragment>
-//         <Input data={{type:'text',name:'id'}} value={this.props.state.id} onChange={this.props.onChange} />
-//         <Input data={{type:'text',name:'name'}} value={this.props.state.name} onChange={this.props.onChange} />
-//         <div>
-//           {
-//             settings.map((set, i)=>
-//               <Input key={i} data={set} value={this.state[set.name]} onChange={this.onChangeSettings} />
-//             )
-//           }
-//         </div>
-//       </React.Fragment>
-//     )
-//   }  
-// }
-
 class EnterSettings extends React.Component{
   constructor(props){
     super(props)
@@ -149,7 +99,6 @@ class EnterSettings extends React.Component{
   }
 
   render(){
-    // console.log(this.props.settings)
     // change settings name id
     if(!this.props.settings || !this.props.state.type) return null
     const settings = this.props.settings[this.props.state.type]
@@ -159,7 +108,6 @@ class EnterSettings extends React.Component{
       {type:'text',name:'id'},
       {type:'text',name:'name',minLength:1}
     ]
-    const values = {}
 
     const forms = [{
       name: 'settings',
@@ -168,10 +116,11 @@ class EnterSettings extends React.Component{
       autoconfirm: true
     }]
 
+    // console.log(schema, values, forms)
     return(
       <React.Fragment>
-        <div>
-          <Form fields={schema} values={values} forms={forms} autoconfirm={true} onConfirm={({data})=>this.onReady(data)} />
+        <div className="add-form">
+          <Form fields={schema} forms={forms} autoconfirm={true} onConfirm={({data})=>this.onReady(data)} />
         </div>
       </React.Fragment>
     )
