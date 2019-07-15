@@ -8,7 +8,7 @@ export class Form extends React.Component{
   constructor(props){
     super(props)
 
-    console.log(props.values)
+    // console.log(props.values)
     this.state = {
       values: props.values,
       errors: {}
@@ -27,8 +27,8 @@ export class Form extends React.Component{
     let {values, errors} = this.state
     values[name] = value
     errors[name] = isError
-    console.log(value, name)
-    console.log(values, errors)
+    // console.log(value, name)
+    // console.log(values, errors)
     this.setState({values, errors})
 
     if(this.props.autoconfirm){

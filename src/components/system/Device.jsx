@@ -4,7 +4,6 @@ import { Button } from "../ui/Buttons/Buttons";
 import { ItemsContainer } from "../../containers/SystemContainers";
 import { SettingsModal, SettingsForm } from "../device/SettingsModal";
 import { SimpleLink } from "../ui/Links/Links";
-import { Input } from "../ui/Inputs/Inputs";
 import { Form } from "../ui/Form/Form";
 
 export class Device extends React.Component{
@@ -18,10 +17,12 @@ export class Device extends React.Component{
   }
   render(){
     const {token} = this.props.user
-    const {devices, items, deviceSettings} = this.props.system
+    const {devices, items, deviceSettings, systemInfo} = this.props.system
     const {id} = this.props
 
     const device = devices.get(id)
+
+    // console.log(systemInfo.dictionary.words)
 
     // redirect to system if no deice with such id
     if(!device || items.size === 0) return null
@@ -56,9 +57,7 @@ export class Device extends React.Component{
               <b>{device.online === true ? 'Online' : 'Было онлайн' + device['last-online']}</b>
               <Button onClick={()=>this.props.onRemove(device.id, token)}>Удалить</Button>
             </div>
-            <SettingsModal>
-              <SettingsForm type="device-id" id={device.id} settings={settings} schema={schema} onChange={this.props.onChange} />
-            </SettingsModal>
+            <SettingsModal type="device-id" id={device.id} settings={settings} schema={schema} onChange={this.props.onChange} />
           </SimpleCard>
           
           <ItemsContainer parameters={parameters} link={ItemLink} deleteBtn={DeleteBtn} deviceId={device.id} />

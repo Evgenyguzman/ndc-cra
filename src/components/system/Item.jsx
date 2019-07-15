@@ -50,9 +50,7 @@ export class Item extends React.Component{
 
               <Button onClick={()=>this.props.onRemove(item.id)}>Удалить</Button>
             </div>
-            <SettingsModal>
-              <SettingsForm type="item-id" id={item.id} settings={settings} schema={protocol} onChange={this.props.onChange} />
-            </SettingsModal>
+            <SettingsModal type="item-id" id={item.id} settings={settings} schema={protocol} onChange={this.props.onChange} />
           </SimpleCard>
           <SimpleCard>
             <h2>Графики</h2>

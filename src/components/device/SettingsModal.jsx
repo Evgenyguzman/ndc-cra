@@ -56,53 +56,12 @@ export class SettingsModal extends React.Component{
           contentLabel="Example Modal"
         >
           <Button onClick={this.closeModal}>close</Button>
-          { this.props.children }
+          <SettingsForm type="device-id" id={this.props.id} settings={this.props.settings} schema={this.props.schema} onChange={(data)=>{this.props.onChange(data); this.closeModal()}} />
         </Modal>
       </React.Fragment>
     )
   }
 }
-
-// export class SettingsForm extends React.Component{
-
-//   constructor(props){
-//     super(props)
-//     this.state = props.settings 
-//     this.onSave = this.onSave.bind(this)
-//     this.onChange = this.onChange.bind(this)
-//   }
-
-//   onSave() {
-//     this.props.onChange({
-//       'settings': this.state,
-//       [this.props.type]: this.props.id
-//     })
-//   }
-
-//   onChange(value, name) {
-//     this.setState({
-//       [name]: value
-//     })
-//   }
-
-//   render(){
-//     const settings = this.state
-//     const { schema } = this.props
-//     // console.log(schema, settings)
-//     return(
-//       <React.Fragment>
-//         { this.props.children }
-//         <div className="settings">
-//           {schema.map((set, i)=>
-//             <Input key={i} data={set} value={settings[set.name]} onChange={this.onChange} />
-//           )}
-//         </div>
-//         <Button onClick={this.onSave}>save</Button>
-//       </React.Fragment>
-//     )
-//   }
-
-// }
 
 export class SettingsForm extends React.Component{
 
