@@ -140,7 +140,7 @@ class EnterSettings extends React.Component{
   }
 
   onReady(data){
-    console.log("Ready: ", data)
+    // console.log("Ready: ", data)
     this.props.onChange(data.id, "id")
     this.props.onChange(data.name, "name")
     this.props.onChange(data['data-type'], 'data-type')

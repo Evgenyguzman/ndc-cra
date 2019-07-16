@@ -1,8 +1,7 @@
 import React from "react";
 import { SimpleCard } from "../ui/Cards/Cards";
 import { Button } from "../ui/Buttons/Buttons";
-import { Input } from "../ui/Inputs/Inputs";
-import { SettingsModal, SettingsForm } from "../device/SettingsModal";
+import { SettingsModal } from "../device/SettingsModal";
 import { SimpleLink } from "../ui/Links/Links";
 import { ChartContainer } from "../../containers/SystemContainers";
 import { Form } from "../ui/Form/Form";

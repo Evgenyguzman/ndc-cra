@@ -17,10 +17,11 @@ export class Form extends React.Component{
   }
 
   componentWillReceiveProps(nextProps){
-    // console.log(nextProps)
-    // if(nextProps.values){
-    //   this.setState({values: nextProps.values})
-    // }
+    // console.log(nextProps.values != this.props.values)
+    if(nextProps.values && Object.keys(nextProps.values).length > 0){
+      // console.log(nextProps.values, this.props.values)
+      this.setState({values: nextProps.values})
+    }
   }
 
   // реагировать на изменения values извне
@@ -28,6 +29,10 @@ export class Form extends React.Component{
 
   onChange(value, name, isError){
     let {values, errors} = this.state
+
+    if(values[name] === value) return 
+    // а что если errors изменился?
+
     values[name] = value
     errors[name] = isError
     // console.log(value, name)
@@ -52,7 +57,7 @@ export class Form extends React.Component{
     const isError = Object.keys(errors).some((key)=>{
       return errors[key]
     })
-    console.log(values, errors, isError)
+    // console.log(values, errors, isError)
     return(
       <React.Fragment>
         {

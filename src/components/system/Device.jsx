@@ -2,7 +2,7 @@ import React from "react";
 import { SimpleCard } from "../ui/Cards/Cards";
 import { Button } from "../ui/Buttons/Buttons";
 import { ItemsContainer } from "../../containers/SystemContainers";
-import { SettingsModal, SettingsForm } from "../device/SettingsModal";
+import { SettingsModal } from "../device/SettingsModal";
 import { SimpleLink } from "../ui/Links/Links";
 import { Form } from "../ui/Form/Form";
 
@@ -17,7 +17,7 @@ export class Device extends React.Component{
   }
   render(){
     const {token} = this.props.user
-    const {devices, items, deviceSettings, systemInfo} = this.props.system
+    const {devices, items, deviceSettings} = this.props.system
     const {id} = this.props
 
     const device = devices.get(id)

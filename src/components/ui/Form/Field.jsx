@@ -4,9 +4,9 @@ import { Switch, InputText, InputInteger, Enum, InputIP } from "../Inputs/Inputs
 import './style.sass';
 
 export class Field extends React.Component{
-  constructor(props){
-    super(props)
-  }
+  // constructor(props){
+  //   super(props)
+  // }
   componentWillMount(){
     // обработка default-value
     if(this.props.value === undefined) {

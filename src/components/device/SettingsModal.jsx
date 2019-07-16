@@ -3,7 +3,6 @@ import React from "react";
 import Modal from 'react-modal';
 
 import { Button } from "../ui/Buttons/Buttons";
-import { Input } from "../ui/Inputs/Inputs";
 import { Form } from "../ui/Form/Form";
 
 const customStyles = {
@@ -56,7 +55,7 @@ export class SettingsModal extends React.Component{
           contentLabel="Example Modal"
         >
           <Button onClick={this.closeModal}>close</Button>
-          <SettingsForm type="device-id" id={this.props.id} settings={this.props.settings} schema={this.props.schema} onChange={(data)=>{this.props.onChange(data); this.closeModal()}} />
+          <SettingsForm type={this.props.type} id={this.props.id} settings={this.props.settings} schema={this.props.schema} onChange={(data)=>{this.props.onChange(data); this.closeModal()}} />
         </Modal>
       </React.Fragment>
     )

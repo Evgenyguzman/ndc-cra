@@ -42,7 +42,6 @@ export const DeviceContainer = connect(
     async onChange(device) {
       const wsCloudService = WsCloudService.getInstance()
       const res = await wsCloudService.changeDevice(device)
-      console.log(res)
       if(!res.error){
         // dispatch({type: C.UPDATE_DEVICE, data: res.device})
       }

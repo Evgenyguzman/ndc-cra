@@ -89,7 +89,7 @@ export class Chart extends React.Component{
 
   componentWillMount(){
     this.getData()
-    setInterval(this.getData, 30000)
+    // setInterval(this.getData, 30000)
   }
 
   render(){
