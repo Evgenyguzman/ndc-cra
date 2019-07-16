@@ -102,7 +102,7 @@ const systemInfo = (state = {}, action) => {
       new_state.isConnected = false
       return new_state
     case C.UPDATE_DICTIONARY:
-      new_state.dictionary = action.data
+      new_state.dictionary = action.data.dictionary
       return new_state
     default:
       return state

@@ -19,19 +19,24 @@ export class Device extends React.Component{
   }
   render(){
     const {token} = this.props.user
-    const {devices, items, deviceSettings} = this.props.system
+    const {devices, items, deviceSettings, systemInfo} = this.props.system
     const {id} = this.props
 
     const device = devices.get(id)
-
-    // console.log(systemInfo.dictionary.words)
 
     // redirect to system if no deice with such id
     if(!device || items.size === 0) return null
     // console.log(device)
     // console.log(items)
   
-    const schema = deviceSettings[device.type]
+    let schema = deviceSettings[device.type]
+    if(systemInfo.dictionary){
+      const words = systemInfo.dictionary.words
+      schema = deviceSettings[device.type].map((set)=>{
+        set.label = words[set.name].ru
+        return set
+      })
+    }
 
     const parameters = device.items.map(itemId => {
       return items.get(itemId)
@@ -67,7 +72,7 @@ export class Device extends React.Component{
             </div>
             <div className="device-title"> 
               <h1>{device.name}</h1>
-              <Form fields={[{type: 'text', name: 'name'}]} values={{name: device.name}} autoconfirm={true} onConfirm={({data})=>this.props.onChange({'device-id': device.id, ...data})} />
+              <Form fields={[{type: 'text', name: 'name', label: 'Имя'}]} values={{name: device.name}} autoconfirm={true} onConfirm={({data})=>this.props.onChange({'device-id': device.id, ...data})} />
               <h3>{device.id}</h3>
             </div>
             <div className="btm-btn btm-left-btn">

@@ -20,7 +20,7 @@ export class Item extends React.Component{
     }
   }
   render(){
-    const {devices, items, itemSettings} = this.props.system
+    const {devices, items, itemSettings, systemInfo} = this.props.system
     const {id} = this.props
     const item = items.get(id)
     // // redirect to system if no device with such id
@@ -34,8 +34,20 @@ export class Item extends React.Component{
     const isWriteOnly = item.access === 'write'
 
     const common = itemSettings.common
-    const protocol = itemSettings.protocol[item.type]
+    
+    let protocol = itemSettings.protocol[item.type]
+    if(systemInfo.dictionary){
+      const words = systemInfo.dictionary.words
+      protocol = itemSettings.protocol[item.type].map((set)=>{
+        set.label = words[set.name].ru
+        return set
+      })
+    }
+    
+    
     const settings = item.settings
+
+    
 
     return (
       <div>

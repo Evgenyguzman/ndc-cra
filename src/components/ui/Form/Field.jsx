@@ -23,21 +23,21 @@ export class Field extends React.Component{
 
     if(data.type === 'boolean'){
       // switch
-      return withLabel(<Switch name={data.name} disabled={data.isDisabled} value={this.props.value} onChange={this.props.onChange} />, data.name, this.props.error)
+      return withLabel(<Switch name={data.name} disabled={data.isDisabled} value={this.props.value} onChange={this.props.onChange} />, data.label || data.name, this.props.error)
     }else if(data.type === 'text' || data.type === 'password'){
       // input type text
-      return withLabel(<InputText type={data.type} name={data.name} disabled={data.isDisabled} value={this.props.value} minLength={data.minLength} onChange={this.props.onChange} />, data.name, this.props.error)
+      return withLabel(<InputText type={data.type} name={data.name} disabled={data.isDisabled} value={this.props.value} minLength={data.minLength} onChange={this.props.onChange} />, data.label || data.name, this.props.error)
     }else if(data.type === 'integer'){
       // input type number
-      return withLabel(<InputInteger name={data.name} disabled={data.isDisabled} value={this.props.value} min={data.min} max={data.max} onChange={this.props.onChange} />, data.name, this.props.error)
+      return withLabel(<InputInteger name={data.name} disabled={data.isDisabled} value={this.props.value} min={data.min} max={data.max} onChange={this.props.onChange} />, data.label || data.name, this.props.error)
     }else if(data.type === 'enum'){
       // select
-      return withLabel(<Enum name={data.name} disabled={data.isDisabled} values={data.values} value={this.props.value} onChange={this.props.onChange} /> , data.name, this.props.error)
+      return withLabel(<Enum name={data.name} disabled={data.isDisabled} values={data.values} value={this.props.value} onChange={this.props.onChange} /> , data.label || data.name, this.props.error)
     }else if(data.type === 'net-address'){
       // ip
-      return withLabel(<InputIP name={data.name} disabled={data.isDisabled} value={this.props.value} onChange={this.props.onChange} />, data.name, this.props.error)
+      return withLabel(<InputIP name={data.name} disabled={data.isDisabled} value={this.props.value} onChange={this.props.onChange} />, data.label || data.name, this.props.error)
     }
-    return withLabel(<InputText name={data.name} disabled={data.isDisabled} value={this.props.value} onChange={this.props.onChange} />, data.name, this.props.error)
+    return withLabel(<InputText name={data.name} disabled={data.isDisabled} value={this.props.value} onChange={this.props.onChange} />, data.label || data.name, this.props.error)
   }
 }
 
