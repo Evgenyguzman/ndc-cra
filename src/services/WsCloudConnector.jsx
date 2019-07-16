@@ -44,8 +44,9 @@ export class WsCloudConnector extends React.Component{
       console.log(deviceId)
       dispatch({type: C.REMOVE_DEVICE, data: deviceId})
     }
-    this.wsCloudService.onItemRemoved = ({itemId, deviceId}) => {
-      console.log(itemId, itemId)
+    this.wsCloudService.onItemRemoved = ({itemId}) => {
+      const deviceId = this.props.store.getState().system.items.get(itemId)['device-id']
+      console.log(itemId, deviceId)
       dispatch({type: C.REMOVE_ITEM, data: itemId, deviceId})
     }
     this.wsCloudService.onDisconnect = async () => {

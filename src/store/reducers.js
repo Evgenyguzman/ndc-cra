@@ -36,6 +36,7 @@ const devices = (state = new Map(), action) => {
       deviceId = action.deviceId
       id = action.data
       device = new_state.get(deviceId)
+      if(!device) return new_state
       device.items = device.items.filter((itemId)=>{
         return (itemId !== id)
       })

@@ -5,10 +5,16 @@ import { SimpleCard } from "../ui/Cards/Cards";
 export class Items extends React.Component{
   render(){
     // console.log(this.props)
+    const { addItemLink, ...rest } = this.props
     return(
       <React.Fragment>
         <SimpleCard>
-          <ItemsList parameters={this.props.parameters} link={this.props.link} deleteBtn={this.props.deleteBtn} onRemove={this.props.onRemove} deviceId={this.props.deviceId} />
+          <div className="items-list-wrapper">
+            <ItemsList {...rest} />
+          </div>
+          <div className={"btm-btn btm-right-btn"}>
+            {addItemLink}
+          </div>
         </SimpleCard>
         {/* <SimpleCard>
           <ItemCards parameters={this.props.parameters} />

@@ -30,33 +30,45 @@ export class Form extends React.Component{
   onChange(value, name, isError){
     let {values, errors} = this.state
 
-    if(values[name] === value) return 
-    // а что если errors изменился?
+    // console.log(values[name], value)
+    // console.log(errors[name], isError)
+    
+    if(values[name] !== value){
+      values[name] = value
+      this.setState({values})
+    }
 
-    values[name] = value
-    errors[name] = isError
-    // console.log(value, name)
-    // console.log(values, errors)
-    this.setState({values, errors})
+    if(errors[name] !== isError){
+      errors[name] = isError
+      this.setState({errors})
+    }
 
     if(this.props.autoconfirm){
-      const isError = Object.keys(errors).some((key)=>{
-        return errors[key]
-      })
+      const isError = this.isError(this.props.fields, this.props.forms, errors)
       if(!isError){
         // console.log
         this.props.onConfirm({data: values})
+      }else{
+        // not ready
       }
     }
 
   }
 
+  isError(fields, forms, errors){
+    const fieldsLength = fields ? fields.length : 0
+    const formsLength = forms ? forms.length : 0
+    const qty = fieldsLength + formsLength
+    if(qty !== Object.keys(errors).length) return true
+    return Object.keys(errors).some((key)=>{
+      return errors[key]
+    })
+  }
+
   render(){
     const {values, errors} = this.state
     const {fields, autoconfirm, forms} = this.props
-    const isError = Object.keys(errors).some((key)=>{
-      return errors[key]
-    })
+    const isError = this.isError(fields, forms, errors)
     // console.log(values, errors, isError)
     return(
       <React.Fragment>

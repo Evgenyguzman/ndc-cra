@@ -45,7 +45,7 @@ export class SettingsModal extends React.Component{
   render(){
     return( 
       <React.Fragment>
-        <Button onClick={this.openModal}>Настройки</Button>
+        <Button onClick={this.openModal}>Настройки {this.props.settingsType}</Button>
         <Modal
           isOpen={this.state.isOpen}
           onAfterOpen={this.afterOpenModal}

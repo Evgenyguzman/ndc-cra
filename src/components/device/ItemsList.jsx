@@ -17,26 +17,17 @@ export class ItemsList extends React.Component{
       accessor: 'value',
       Cell: props => <span className='number'>{props.value}</span>
     }, {
-      Header: 'Данные',
-      accessor: 'data'
-    }, {
       Header: 'Тип',
       accessor: 'data-type'
     }, {
-      Header: 'Время хранения',
-      accessor: 'storage-range-time'
-    }, {
-      Header: 'Код ошибки',
-      accessor: 'error'
-    }, {
-      Header: 'Больше',
+      Header: '',
       Cell: props => {
         // console.log(props)
         return React.createElement(this.props.link, {id: props.original.id})
         // return <span className='number'>{props.value}</span>
       }
     }, {
-      Header: 'Удалить',
+      Header: '',
       Cell: props => {
         return React.createElement(this.props.deleteBtn, {itemId: props.original.id, deviceId: this.props.deviceId, onRemove: this.props.onRemove})
       }

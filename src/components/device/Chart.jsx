@@ -10,15 +10,9 @@ export class Chart extends React.Component{
   constructor(props){
     super(props)
 
-    const startDate = new Date()
-    const endDate = new Date()
-    startDate.setDate(endDate.getDate()-1)
-
     this.state = {
       values: [],
       labels: [],
-      startDate,
-      endDate
     }
     this.handleChangeStart = this.handleChangeStart.bind(this)
     this.handleChangeEnd = this.handleChangeEnd.bind(this)
@@ -26,12 +20,30 @@ export class Chart extends React.Component{
     this.setData = this.setData.bind(this)
   }
 
+  componentWillMount(){
+    const startDate = new Date()
+    const endDate = new Date()
+    startDate.setHours(0,0,0,0)
+    endDate.setHours(23,59,59,999)
+    this.setState({
+      startDate,
+      endDate
+    }, this.getData)
+    this.interval = setInterval(this.getData, 30000)
+  }
+  
+  componentWillUnmount(){
+    clearInterval(this.interval)
+  }
+
   handleChangeStart(date){
+    date.setHours(0,0,0,0)
     this.setState({
       startDate: date
     }, this.getData)
   }
   handleChangeEnd(date){
+    date.setHours(23,59,59,999)
     this.setState({
       endDate: date
     }, this.getData)
@@ -39,9 +51,9 @@ export class Chart extends React.Component{
 
   async getData(){
     const { startDate, endDate } = this.state
-    console.log('Get data from ' + startDate + ' to ' + endDate)
     const from = Date.parse(startDate)
     const to = Date.parse(endDate)
+    console.log('Get data from ' + startDate + ' to ' + endDate)
 
     let data = [{
       value: 56,
@@ -72,7 +84,13 @@ export class Chart extends React.Component{
       let month = date.getMonth()+1
       if (month < 10) month = '0' + month
       const year = ('' + date.getFullYear()).slice(-2)
-      return day + '.' + month + '.' + year
+      let hour = date.getHours()
+      if (hour < 10) hour = '0' + hour
+      let minute = date.getMinutes()
+      if (minute < 10) minute = '0' + minute
+      let second = date.getSeconds()
+      if (second < 10) second = '0' + second
+      return day + '.' + month + '.' + year + ' ' + hour + ':' + minute + ':' + second
     })
     // console.log(labels)
 
@@ -85,11 +103,6 @@ export class Chart extends React.Component{
       values,
       labels
     })
-  }
-
-  componentWillMount(){
-    this.getData()
-    // setInterval(this.getData, 30000)
   }
 
   render(){

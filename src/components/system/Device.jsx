@@ -1,10 +1,12 @@
 import React from "react";
 import { SimpleCard } from "../ui/Cards/Cards";
-import { Button } from "../ui/Buttons/Buttons";
+import { ButtonWithPrompt } from "../ui/Buttons/Buttons";
 import { ItemsContainer } from "../../containers/SystemContainers";
 import { SettingsModal } from "../device/SettingsModal";
 import { SimpleLink } from "../ui/Links/Links";
 import { Form } from "../ui/Form/Form";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faAngleRight, faTrashAlt, faAngleLeft } from "@fortawesome/free-solid-svg-icons";
 
 export class Device extends React.Component{
   constructor(props){
@@ -34,7 +36,6 @@ export class Device extends React.Component{
     const parameters = device.items.map(itemId => {
       return items.get(itemId)
     })
-    // console.log(parameters)
 
     // if(!device || !device.parameters || !this.state.parameterIds || !this.state.chartsIds) return null
 
@@ -45,22 +46,39 @@ export class Device extends React.Component{
 
     const settings = device.settings
 
+    const isOnline = device.online
+    const isOnlineClass = isOnline ? 'green' : 'red'
+    const isOnlineMsg = isOnline ? 'В сети' : device['last-online'] ? 'Было в сети ' + device['last-online'] : 'Не в сети'
+
     return (
       <div>
         <div>
           <SimpleCard>
+            <div className="top-btn top-left-btn">
+              <SimpleLink to={"/system"}>
+                <FontAwesomeIcon icon={faAngleLeft} color='white' size="3x" />
+              </SimpleLink>
+              <SimpleLink to={"/system"}>
+                Все устройства
+              </SimpleLink>
+            </div>
+            <div className={"top-btn top-right-btn " + isOnlineClass}>
+              <span>{isOnlineMsg}</span>
+            </div>
             <div className="device-title"> 
               <h1>{device.name}</h1>
-              <Form fields={[{type: 'text', name: 'name'}]} values={{name: device.name}} autoconfirm={true}  onConfirm={({data})=>this.props.onChange({'device-id': device.id, ...data})} />
+              <Form fields={[{type: 'text', name: 'name'}]} values={{name: device.name}} autoconfirm={true} onConfirm={({data})=>this.props.onChange({'device-id': device.id, ...data})} />
               <h3>{device.id}</h3>
-              <h3>{device.type}</h3>
-              <b>{device.online === true ? 'Online' : 'Было онлайн' + device['last-online']}</b>
-              <Button onClick={()=>this.props.onRemove(device.id, token)}>Удалить</Button>
             </div>
-            <SettingsModal type="device-id" id={device.id} settings={settings} schema={schema} onChange={this.props.onChange} />
+            <div className="btm-btn btm-left-btn">
+              <SettingsModal type="device-id" settingsType={device.type} id={device.id} settings={settings} schema={schema} onChange={this.props.onChange} />
+            </div>
+            <div className="btm-btn btm-right-btn">
+              <ButtonWithPrompt onClick={()=>this.props.onRemove(device.id, token)}><FontAwesomeIcon icon={faTrashAlt} size="lg" color="#e74c3c" /> Удалить</ButtonWithPrompt>
+            </div>
           </SimpleCard>
           
-          <ItemsContainer parameters={parameters} link={ItemLink} deleteBtn={DeleteBtn} deviceId={device.id} />
+          <ItemsContainer parameters={parameters} link={ItemLink} deleteBtn={DeleteBtn} deviceId={device.id} addItemLink={this.props.addItemLink} />
           {/* <SimpleCard>
             <h2>Графики</h2>
             <Tabs charts={charts} />
@@ -76,7 +94,7 @@ class ItemLink extends React.Component{
     const { id } = this.props
     return(
       <React.Fragment>
-        <SimpleLink to={'/item/' + id}>Больше</SimpleLink>
+        <SimpleLink to={'/item/' + id}><FontAwesomeIcon icon={faAngleRight} size="lg" color="#2ecc71" /></SimpleLink>
       </React.Fragment>
     )
   }
@@ -87,7 +105,7 @@ class DeleteBtn extends React.Component{
     const { itemId, deviceId, onRemove } = this.props
     return(
       <React.Fragment>
-        <button onClick={()=>onRemove(itemId, deviceId)}>Delete</button>
+        <ButtonWithPrompt onClick={()=>onRemove(itemId, deviceId)}><FontAwesomeIcon icon={faTrashAlt} size="lg" color="#e74c3c" /></ButtonWithPrompt>
       </React.Fragment>
     )
   }

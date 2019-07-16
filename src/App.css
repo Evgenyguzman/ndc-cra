@@ -6,6 +6,10 @@ body{
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#13adc0', endColorstr='#1196a6',GradientType=1 ) !important;
 }
 
+*{
+  outline: none;
+}
+
 .App {
   text-align: center;
 }

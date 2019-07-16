@@ -1,4 +1,5 @@
 import React from "react";
+import { Form } from "../ui/Form/Form";
 // import { Input, InputCheckbox } from "../ui/Inputs/Inputs";
 // import { Button } from "../ui/Buttons/Buttons";
 
@@ -20,31 +21,20 @@ export class SignUpForm extends React.Component{
   }
   render(){
     // const {requestId, email, password, verifyCode, captchaBase64, name, surname, acceptAgreement} = this.state
+    
+    const schema = [
+      {type:'text', name: 'email', minLength:1},
+      {type:'password', name: 'password', minLength:1},
+      // {type:'switch', name: 'acceptAgreement'}
+    ]
+    
     return (
       <div className="form">
         <div>
           <h3>Sign Up</h3>
           <div>
-            {/* <InputText name="email" value={email} onChange={(email)=>this.setState({email})} />
-            <InputText type="password" name="password" value={password} onChange={(password)=>this.setState({password})} />
-            {(requestId)
-              ?
-                <div>
-                  <InputText name="name" value={name} onChange={(name)=>this.setState({name})} />
-                  <InputText name="surname" value={surname} onChange={(surname)=>this.setState({surname})} />
-                  <div className="verifyCode">
-                    <img src={captchaBase64} alt="verifyCode"/>
-                    <InputText name="verifyCode" value={verifyCode} onChange={(verifyCode)=>this.setState({verifyCode})} />
-                    <Button onClick={()=>this.setState({requestId: null})}>Update</Button>
-                  </div>
-                  <div>
-                    <InputCheckbox name="acceptAgreement" value={acceptAgreement} onChange={(acceptAgreement)=>this.setState({acceptAgreement})} />
-                  </div>
-                </div>
-              :
-                ''
-            }
-            <Button onClick={this.onSubmit}>Next</Button> */}
+            <Form fields={schema} autoconfirm={false} onConfirm={({data})=>data} />
+            {/* <Button onClick={this.onSubmit}>Next</Button> */}
           </div>
         </div>
       </div>

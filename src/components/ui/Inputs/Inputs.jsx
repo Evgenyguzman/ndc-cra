@@ -13,9 +13,9 @@ export class Input extends React.Component{
     if(data.type === 'boolean'){
       // switch
       return withLabel(<Switch name={data.name} value={this.props.value} onChange={this.props.onChange} />, data.name)
-    }else if(data.type === 'text'){
+    }else if(data.type === 'text' || data.type === 'password'){
       // input type text
-      return withLabel(<InputText type="text" name={data.name} value={this.props.value} minLength={data.minLength} onChange={this.props.onChange} />, data.name)
+      return withLabel(<InputText type={data.type} name={data.name} value={this.props.value} minLength={data.minLength} onChange={this.props.onChange} />, data.name)
     }else if(data.type === 'integer'){
       // input type number
       return withLabel(<InputInteger name={data.name} value={this.props.value} min={data.min} max={data.max} onChange={this.props.onChange} />, data.name)
@@ -26,7 +26,7 @@ export class Input extends React.Component{
       // ip
       return withLabel(<InputIP name={data.name} value={this.props.value} onChange={this.props.onChange} />, data.name)
     }
-    return withLabel(<InputText type="text" name={data.name} value={this.props.value} onChange={this.props.onChange} />, data.name)
+    return withLabel(<InputText name={data.name} value={this.props.value} onChange={this.props.onChange} />, data.name)
   }
 }
 
@@ -67,9 +67,10 @@ export class InputText extends React.Component{
     
   }
   render(){
+    const { type, name, disabled } = this.props
     return (
       <React.Fragment>
-        <input type={(this.props.type ? this.props.type : 'text')} name={this.props.name} value={this.state.value} onChange={(e)=>this.setState({value: e.target.value})} onBlur={this.onChangeCompleted} />
+        <input type={(type ? type : 'text')} name={name} disabled={disabled} value={this.state.value} onChange={(e)=>this.setState({value: e.target.value})} onBlur={this.onChangeCompleted} />
       </React.Fragment>
     )
   }
